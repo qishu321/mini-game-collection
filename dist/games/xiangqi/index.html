@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#160f14" />
+    <meta name="description" content="绮局：一款可直接在浏览器中游玩的 Q 版国风中国象棋。" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23160f14'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23d84a45' stroke='%23e7bd75' stroke-width='3'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='27' font-family='serif' fill='white'%3E棋%3C/text%3E%3C/svg%3E" />
+    <title>绮局 · Q版国风象棋</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <main class="game-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-seal">绮</span>
+          <div><h1>绮局</h1><p id="modeLabel">Q版国风象棋</p></div>
+        </div>
+        <div class="turn-pill" id="turnPill"><span></span><b id="turnText">红方行棋</b></div>
+        <div class="top-actions">
+          <a class="soft-button lobby-link" href="../../">游戏大厅</a>
+          <button id="soundToggle" class="soft-button sound-toggle" type="button" aria-pressed="true" title="开关音效"><span aria-hidden="true">♪</span> 音效：开</button>
+          <button id="undoBtn" class="soft-button" type="button">悔棋</button>
+          <button id="restartBtn" class="primary-button" type="button">重开一局</button>
+          <button id="menuBtn" class="soft-button" type="button">返回模式</button>
+        </div>
+      </header>
+
+      <section class="play-layout">
+        <aside class="player-card player-card--black" aria-label="玄青阵营">
+          <div class="player-title"><span>玄青</span><strong>夜骑</strong><time id="blackClock">10:00</time></div>
+          <div class="portrait portrait--black" aria-hidden="true"></div>
+          <div class="captured"><span>已折损</span><div id="blackCaptured">—</div></div>
+        </aside>
+
+        <div class="board-column">
+          <div class="status-strip">
+            <span id="statusText">执子落枰，朱砂先行</span>
+            <div><span id="connectionState" class="connection-state" hidden>本地</span><button id="fastToggle" class="text-button" type="button" aria-pressed="false">演出：开</button></div>
+          </div>
+          <div class="board-frame">
+            <div class="corner corner--tl"></div><div class="corner corner--tr"></div>
+            <div class="corner corner--bl"></div><div class="corner corner--br"></div>
+            <div id="board" class="board" role="grid" aria-label="中国象棋棋盘">
+              <div class="river" aria-hidden="true"><span>楚 河</span><i>风起一枰</i><span>汉 界</span></div>
+              <div class="palace palace--top" aria-hidden="true"></div>
+              <div class="palace palace--bottom" aria-hidden="true"></div>
+              <div id="targets" class="targets"></div>
+              <div id="pieces" class="pieces"></div>
+            </div>
+          </div>
+          <div class="hint-row"><span>点击棋子选择</span><i></i><span>光点为可落子位置</span><i></i><span>支持完整标准规则</span></div>
+        </div>
+
+        <aside class="player-card player-card--red" aria-label="朱砂阵营">
+          <div class="player-title"><span>朱砂</span><strong>炮姬</strong><time id="redClock">10:00</time></div>
+          <div class="portrait portrait--red" aria-hidden="true"></div>
+          <div class="captured"><span>已折损</span><div id="redCaptured">—</div></div>
+        </aside>
+      </section>
+
+      <footer class="game-footer">
+        <span>棋规：标准中国象棋</span>
+        <span id="moveCounter">第 1 回合</span>
+        <span>选中后按 Esc 可取消</span>
+      </footer>
+    </main>
+
+    <div id="battle" class="battle" aria-hidden="true">
+      <div class="battle-speedlines" aria-hidden="true"></div>
+      <div class="battle-stage">
+        <div class="battle-mark">对 决</div>
+        <div class="battle-art">
+          <img src="./assets/chibi-duel.png" alt="朱砂炮姬与玄青夜骑交锋" />
+          <div class="battle-impact" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="battle-copy">
+          <small id="battleKicker">BREAK THE FORMATION</small>
+          <strong id="battleText">破阵！</strong>
+          <span id="battleDetail">一子落定，胜负骤转</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameOver" class="modal" hidden>
+      <div class="modal-card">
+        <span class="modal-seal">胜</span>
+        <p>棋局已定</p>
+        <h2 id="winnerText">朱砂获胜</h2>
+        <div class="modal-actions"><button id="playAgainBtn" class="primary-button" type="button">再来一局</button><button id="gameOverMenuBtn" class="soft-button" type="button">返回模式</button></div>
+      </div>
+    </div>
+
+    <section id="modeSelect" class="mode-select" aria-labelledby="modeTitle">
+      <div class="mode-art"><img src="./assets/chibi-duel.png" alt="朱砂炮姬与玄青夜骑" /></div>
+      <div class="mode-panel">
+        <span class="mode-kicker">Q-VERSION XIANGQI</span>
+        <h2 id="modeTitle">择一方，入此局</h2>
+        <p>与棋灵切磋，或等待另一位弈者。</p>
+        <button id="aiModeBtn" class="mode-option" type="button"><span class="mode-icon">灵</span><span><strong>人机对战</strong><small>简单或噩梦难度</small></span><b>›</b></button>
+        <button id="onlineModeBtn" class="mode-option mode-option--blue" type="button"><span class="mode-icon">联</span><span><strong>联网对战</strong><small>随机匹配在线玩家</small></span><b>›</b></button>
+        <small class="mode-note">联网模式可在两个浏览器标签页中本地测试</small>
+      </div>
+    </section>
+
+    <div id="difficultyModal" class="modal" hidden>
+      <div class="modal-card difficulty-card">
+        <p>选择棋灵强度</p><h2>人机对战</h2>
+        <button class="difficulty-option" data-difficulty="easy" type="button"><strong>简单</strong><span>轻松切磋，偶尔露出破绽</span></button>
+        <button class="difficulty-option nightmare" data-difficulty="nightmare" type="button"><strong>噩梦</strong><span>约 2 秒高速深搜，无需下载引擎</span></button>
+        <button id="difficultyBack" class="text-button" type="button">返回</button>
+      </div>
+    </div>
+
+    <div id="matchmaking" class="modal" hidden>
+      <div class="modal-card matchmaking-card">
+        <div class="matching-orbit"><i></i><span>棋</span></div>
+        <p>RANDOM MATCH</p><h2 id="matchTitle">正在寻找对手</h2>
+        <span id="matchDetail">已连接本地对战服务器</span>
+        <button id="cancelMatchBtn" class="soft-button" type="button">取消匹配</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./game.js"></script>
+  </body>
+</html>

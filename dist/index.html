@@ -2,84 +2,48 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#160f14" />
-    <meta name="description" content="绮局：一款可直接在浏览器中游玩的 Q 版国风中国象棋。" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23160f14'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23d84a45' stroke='%23e7bd75' stroke-width='3'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='27' font-family='serif' fill='white'%3E棋%3C/text%3E%3C/svg%3E" />
-    <title>绮局 · Q版国风象棋</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f0d7a1" />
+    <meta name="description" content="小游戏集合：无需安装，打开网页即刻游玩。" />
+    <title>游艺小馆 · 小游戏集合</title>
+    <link rel="stylesheet" href="./collection.css" />
   </head>
   <body>
-    <div class="grain" aria-hidden="true"></div>
-    <main class="game-shell">
-      <header class="topbar">
-        <div class="brand">
-          <span class="brand-seal">绮</span>
-          <div><h1>绮局</h1><p>Q版国风象棋 · 本地双人</p></div>
-        </div>
-        <div class="turn-pill" id="turnPill"><span></span><b id="turnText">红方行棋</b></div>
-        <div class="top-actions">
-          <button id="undoBtn" class="soft-button" type="button">悔棋</button>
-          <button id="restartBtn" class="primary-button" type="button">重开一局</button>
-        </div>
-      </header>
+    <div class="paper-noise" aria-hidden="true"></div>
+    <header class="masthead">
+      <a class="seal" href="./" aria-label="游艺小馆首页">游</a>
+      <div><strong>游艺小馆</strong><span>MINI GAME COLLECTION</span></div>
+      <a class="github-link" href="https://github.com/qishu321/mini-game-collection">GitHub ↗</a>
+    </header>
 
-      <section class="play-layout">
-        <aside class="player-card player-card--black" aria-label="玄青阵营">
-          <div class="player-title"><span>玄青</span><strong>夜骑</strong></div>
-          <div class="portrait portrait--black" aria-hidden="true"></div>
-          <div class="captured"><span>已折损</span><div id="blackCaptured">—</div></div>
-        </aside>
-
-        <div class="board-column">
-          <div class="status-strip">
-            <span id="statusText">执子落枰，朱砂先行</span>
-            <button id="fastToggle" class="text-button" type="button" aria-pressed="false">演出：开</button>
-          </div>
-          <div class="board-frame">
-            <div class="corner corner--tl"></div><div class="corner corner--tr"></div>
-            <div class="corner corner--bl"></div><div class="corner corner--br"></div>
-            <div id="board" class="board" role="grid" aria-label="中国象棋棋盘">
-              <div class="river" aria-hidden="true"><span>楚 河</span><i>风起一枰</i><span>汉 界</span></div>
-              <div class="palace palace--top" aria-hidden="true"></div>
-              <div class="palace palace--bottom" aria-hidden="true"></div>
-              <div id="targets" class="targets"></div>
-              <div id="pieces" class="pieces"></div>
-            </div>
-          </div>
-          <div class="hint-row"><span>点击棋子选择</span><i></i><span>光点为可落子位置</span><i></i><span>支持完整标准规则</span></div>
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">今日开馆 · 一局正好</p>
+          <h1>把好玩的，<br /><em>慢慢收进来。</em></h1>
+          <p class="intro">这里收藏轻巧、耐玩的网页小游戏。无需安装，不用登录，选一张游戏牌就能开始。</p>
+          <div class="hero-meta"><span><b>01</b> 已开放</span><span><b>03</b> 筹备中</span><span><b>∞</b> 随时扩展</span></div>
         </div>
-
-        <aside class="player-card player-card--red" aria-label="朱砂阵营">
-          <div class="player-title"><span>朱砂</span><strong>炮姬</strong></div>
-          <div class="portrait portrait--red" aria-hidden="true"></div>
-          <div class="captured"><span>已折损</span><div id="redCaptured">—</div></div>
-        </aside>
+        <a class="featured" href="./games/xiangqi/">
+          <div class="featured-art"><img src="./games/xiangqi/assets/chibi-duel.png" alt="朱砂炮姬与玄青夜骑" /></div>
+          <div class="featured-label"><span>NOW PLAYING</span><h2>绮局</h2><p>Q版国风中国象棋</p><b>开始对弈 →</b></div>
+        </a>
       </section>
 
-      <footer class="game-footer">
-        <span>棋规：标准中国象棋</span>
-        <span id="moveCounter">第 1 回合</span>
-        <span>选中后按 Esc 可取消</span>
-      </footer>
+      <section class="shelf" aria-labelledby="shelf-title">
+        <div class="section-title"><span>游戏架</span><h2 id="shelf-title">下一局，想玩什么？</h2></div>
+        <div class="game-grid">
+          <a class="game-card available" href="./games/xiangqi/">
+            <span class="card-number">壹</span><div class="card-icon xiangqi-icon">棋</div>
+            <div><small>策略 · 对战</small><h3>中国象棋</h3><p>完整棋规、双档 AI 与随机联网匹配。</p></div><b>进入游戏</b>
+          </a>
+          <article class="game-card coming"><span class="card-number">贰</span><div class="card-icon">五</div><div><small>连珠 · 博弈</small><h3>五子棋</h3><p>黑白落子，五子连珠。</p></div><b>筹备中</b></article>
+          <article class="game-card coming"><span class="card-number">叁</span><div class="card-icon">₂₀₄₈</div><div><small>数字 · 益智</small><h3>2048</h3><p>轻轻一滑，合成更大的数字。</p></div><b>筹备中</b></article>
+          <article class="game-card coming"><span class="card-number">肆</span><div class="card-icon">蛇</div><div><small>街机 · 反应</small><h3>贪吃蛇</h3><p>绕过自己，把小蛇越养越长。</p></div><b>筹备中</b></article>
+        </div>
+      </section>
     </main>
 
-    <div id="battle" class="battle" aria-hidden="true">
-      <div class="battle-beam"></div>
-      <img src="./assets/chibi-duel.png" alt="朱砂炮姬与玄青夜骑交锋" />
-      <div class="battle-copy"><small>BREAK THE FORMATION</small><strong id="battleText">破阵！</strong></div>
-    </div>
-
-    <div id="gameOver" class="modal" hidden>
-      <div class="modal-card">
-        <span class="modal-seal">胜</span>
-        <p>棋局已定</p>
-        <h2 id="winnerText">朱砂获胜</h2>
-        <button id="playAgainBtn" class="primary-button" type="button">再来一局</button>
-      </div>
-    </div>
-
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./game.js"></script>
+    <footer><span>游艺小馆</span><p>一个持续生长的网页小游戏集合。</p><time>2026</time></footer>
   </body>
 </html>
