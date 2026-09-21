@@ -110,6 +110,12 @@ export function isInCheck(side, state) {
   return state.some(p => p.side !== side && pseudoMoves(p, state).some(move => move.x === general.x && move.y === general.y));
 }
 
+export function checkingPieces(side, state) {
+  const general = state.find(p => p.side === side && p.type === "general");
+  if (!general) return [];
+  return state.filter(p => p.side !== side && pseudoMoves(p, state).some(move => move.x === general.x && move.y === general.y));
+}
+
 export function validMoves(item, state) {
   return pseudoMoves(item, state).filter(move => !isInCheck(item.side, simulateMove(state, item.id, move.x, move.y)));
 }

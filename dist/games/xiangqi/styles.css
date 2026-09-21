@@ -84,6 +84,16 @@ a.soft-button { display:inline-flex; align-items:center; text-decoration:none; f
 .piece:hover { transform: translate(-50%, -50%) translateY(-3px) scale(1.04); filter: brightness(1.1); }
 .piece.selected { transform: translate(-50%, -50%) translateY(-6px) scale(1.1); z-index: 6; box-shadow: 0 0 0 4px #fff3b241, 0 0 28px #fff0a7, 0 12px 18px #2d160f99, inset 0 0 0 3px #fff5d166; }
 .piece.last-move { filter: brightness(1.12); box-shadow: 0 0 0 3px #ffef9b52, 0 8px 12px #2d160f66, inset 0 0 0 3px #fff2c833; }
+.piece.mate-attacker { z-index: 8; animation: mate-attacker 520ms ease-in-out infinite alternate; }
+.piece.checkmated { z-index: 8; animation: checkmated 380ms ease-in-out infinite alternate; }
+.mate-reveal { position: absolute; z-index: 12; left: 50%; top: 50%; width: min(330px, 76%); transform: translate(-50%, -50%); padding: 18px 22px 20px; text-align: center; pointer-events: none; color: #fff2d2; background: linear-gradient(90deg, transparent, #180b0ee8 13%, #180b0ef5 87%, transparent); border-top: 1px solid #f0c57c9c; border-bottom: 1px solid #f0c57c9c; text-shadow: 0 3px 12px #000; animation: mate-reveal-in .34s ease-out both; }
+.mate-reveal small, .mate-reveal span { display: block; }
+.mate-reveal small { color: #efc275; font: 600 10px/1.2 ui-monospace, monospace; letter-spacing: .35em; }
+.mate-reveal strong { display: block; margin: 4px 0 6px; font: 700 clamp(42px, 7vw, 66px)/1 STKaiti, KaiTi, serif; letter-spacing: .18em; text-indent: .18em; }
+.mate-reveal span { color: #d7c5ac; font-size: 12px; line-height: 1.6; }
+@keyframes mate-attacker { to { filter: brightness(1.35); box-shadow: 0 0 0 4px #fff0a875, 0 0 34px 12px #f6b846d4, inset 0 0 0 3px #fff2c8; transform: translate(-50%, -50%) scale(1.12); } }
+@keyframes checkmated { from { filter: saturate(.7); box-shadow: 0 0 0 4px #601018, 0 0 20px #b21220; } to { filter: saturate(1.2) brightness(1.25); box-shadow: 0 0 0 7px #d52a36a8, 0 0 42px 16px #d31928db; transform: translate(-50%, -50%) scale(.92); } }
+@keyframes mate-reveal-in { from { opacity: 0; transform: translate(-50%, -44%) scale(.92); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
 .target { width: 17px; height: 17px; padding: 0; border-radius: 50%; background: #fff2ae; border: 3px solid #9a4936; box-shadow: 0 0 0 5px #fff3ac41, 0 0 20px #fff1a8; pointer-events: auto; cursor: pointer; }
 .target.capture { width: clamp(46px, 7vh, 66px); height: clamp(46px, 7vh, 66px); background: transparent; border: 3px dashed #a21e25; box-shadow: 0 0 18px #be272866; animation: spin 5s linear infinite; }
 .target.cannon-capture { width: clamp(62px, 8.8vh, 82px); height: clamp(62px, 8.8vh, 82px); border: 3px solid #fff0a6; background: radial-gradient(circle, #fff9d8 0 8%, #ef605d80 9% 22%, transparent 23%); box-shadow: 0 0 0 5px #a71f2e, 0 0 0 9px #ffcb6a78, 0 0 38px 12px #ff4939bf; animation: cannon-lock .72s ease-in-out infinite alternate; }

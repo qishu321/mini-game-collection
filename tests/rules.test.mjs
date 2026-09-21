@@ -7,6 +7,8 @@ import {
   applyMove,
   createInitialPieces,
   isInCheck,
+  checkingPieces,
+  gameStatus,
   pseudoMoves,
   validMoves
 } from "../dist/games/xiangqi/shared-rules.js";
@@ -21,6 +23,18 @@ test("initial position has legal moves for both sides", () => {
   assert.ok(allLegalMoves(BLACK, pieces).length > 0);
   assert.equal(isInCheck(RED, pieces), false);
   assert.equal(isInCheck(BLACK, pieces), false);
+});
+
+test("checkmate identifies the checking piece and the winning side", () => {
+  const pieces = [
+    p("bg", BLACK, "general", 4, 0),
+    p("rg", RED, "general", 4, 9),
+    p("r1", RED, "rook", 4, 1),
+    p("r2", RED, "rook", 3, 1),
+    p("r3", RED, "rook", 5, 1)
+  ];
+  assert.deepEqual(checkingPieces(BLACK, pieces).map(piece => piece.id), ["r1"]);
+  assert.deepEqual(gameStatus(BLACK, pieces), { over: true, winner: RED, reason: "将死" });
 });
 
 test("horse leg blocks the corresponding pair of jumps", () => {

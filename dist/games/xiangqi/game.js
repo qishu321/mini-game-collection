@@ -1,10 +1,11 @@
-import { RED, BLACK, NAMES, applyMove, at, createInitialPieces, enemy, gameStatus, validMoves } from "./shared-rules.js";
+import { RED, BLACK, NAMES, applyMove, at, checkingPieces, createInitialPieces, enemy, gameStatus, validMoves } from "./shared-rules.js";
 
 const ROLE_NAMES = { general: "主将", advisor: "近卫", elephant: "灵相", horse: "夜骑", rook: "战车", cannon: "炮姬", pawn: "先锋" };
 const $ = selector => document.querySelector(selector);
 const boardEl = $("#board"), piecesEl = $("#pieces"), targetsEl = $("#targets");
 const statusText = $("#statusText"), turnText = $("#turnText"), turnPill = $("#turnPill"), moveCounter = $("#moveCounter");
 const battle = $("#battle"), battleText = $("#battleText"), gameOver = $("#gameOver"), winnerText = $("#winnerText"), toastEl = $("#toast");
+const mateReveal = $("#mateReveal"), mateDetail = $("#mateDetail");
 const modeSelect = $("#modeSelect"), difficultyModal = $("#difficultyModal"), matchmaking = $("#matchmaking");
 
 class ChibiAudio {
@@ -52,11 +53,14 @@ let mode = null, difficulty = null, playerSide = RED, aiWorker = null;
 let aiRequestVersion = 0;
 let socket = null, onlineSequence = 0, onlineStatus = "idle", roomId = null, reconnecting = false;
 let clocks = { red: 600000, black: 600000 };
+let checkedSide = null, checkingIds = new Set(), endingVersion = 0;
+let moveAnimation = Promise.resolve();
 
 function snapshot() { return { pieces: pieces.map(p => ({ ...p })), turn, captured: { red: [...captured.red], black: [...captured.black] }, moveNumber, lastMove: lastMove ? { ...lastMove } : null }; }
 function resetBoard() {
   pieces = createInitialPieces(); turn = RED; selectedId = null; legalTargets = []; history = []; captured = { red: [], black: [] };
-  moveNumber = 1; lastMove = null; clocks = { red: 600000, black: 600000 }; gameOver.hidden = true; render();
+  moveNumber = 1; lastMove = null; clocks = { red: 600000, black: 600000 }; checkedSide = null; checkingIds = new Set(); endingVersion++;
+  mateReveal.hidden = true; gameOver.hidden = true; render();
 }
 function formatClock(ms) { const value = Math.max(0, Math.ceil(ms / 1000)); return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`; }
 function canControl(piece) {
@@ -90,7 +94,7 @@ async function applyLocalMove(move, byAI = false) {
   if (!result.captured) audio.play("move");
   pieces = result.pieces; lastMove = result.move; turn = enemy(turn); if (turn === RED) moveNumber++;
   selectedId = null; legalTargets = []; const status = gameStatus(turn, pieces); render();
-  if (status.over) { endGame(status.winner, status.reason); return true; }
+  if (status.over) { await endGame(status.winner, status.reason); return true; }
   if (status.check) { statusText.textContent = "将军！请即刻应对"; toast("将军！"); }
   locked = mode === "ai" && turn !== playerSide; if (mode === "ai" && turn !== playerSide && !byAI) requestAI(); return true;
 }
@@ -109,9 +113,24 @@ async function moveSelected(x, y) {
   if (mode === "online") { locked = true; render(); statusText.textContent = "等待服务器确认…"; send({ type: "move.submit", roomId, sequence: onlineSequence, ...move }); }
   else await applyLocalMove(move);
 }
-function endGame(winner, reason = "棋局已定") {
-  locked = true; winnerText.textContent = winner ? `${winner === RED ? "朱砂" : "玄青"}获胜` : "和棋";
-  gameOver.querySelector("p").textContent = reason; gameOver.hidden = false; statusText.textContent = "棋局已定";
+async function endGame(winner, reason = "棋局已定") {
+  locked = true;
+  const version = ++endingVersion, loser = winner ? enemy(winner) : null;
+  if (reason === "将死" && loser) {
+    const attackers = checkingPieces(loser, pieces);
+    checkedSide = loser; checkingIds = new Set(attackers.map(piece => piece.id)); render();
+    const attackNames = attackers.map(piece => NAMES[piece.side][piece.type]).join("、") || "绝杀棋子";
+    mateDetail.textContent = `${winner === RED ? "朱砂" : "玄青"}${attackNames}将军，对方主将已无合法着法`;
+    mateReveal.hidden = false; statusText.textContent = "绝杀！主将无路可退"; audio.play("lock");
+    await new Promise(resolve => setTimeout(resolve, fastMode ? 650 : 1750));
+    if (version !== endingVersion) return;
+    mateReveal.hidden = true;
+  }
+  const explanation = reason === "将死" && loser
+    ? `${reason} · ${loser === RED ? "朱砂帅" : "玄青将"}被将军且无任何合法着法`
+    : reason;
+  winnerText.textContent = winner ? `${winner === RED ? "朱砂" : "玄青"}获胜` : "和棋";
+  gameOver.querySelector("p").textContent = explanation; gameOver.hidden = false; statusText.textContent = "棋局已定";
   $("#playAgainBtn").textContent = mode === "online" ? "请求再战" : "再来一局";
   audio.play(winner && winner === playerSide ? "victory" : "defeat");
 }
@@ -120,6 +139,8 @@ function render() {
   for (const piece of pieces) {
     const button = document.createElement("button"); button.type = "button"; button.className = `piece ${piece.side}`;
     if (piece.id === selectedId) button.classList.add("selected"); if (lastMove?.pieceId === piece.id) button.classList.add("last-move");
+    if (piece.type === "general" && piece.side === checkedSide) button.classList.add("checkmated");
+    if (checkingIds.has(piece.id)) button.classList.add("mate-attacker");
     button.style.setProperty("--x", piece.x); button.style.setProperty("--y", piece.y); button.textContent = NAMES[piece.side][piece.type];
     button.setAttribute("role", "gridcell"); button.setAttribute("aria-label", `${piece.side === RED ? "红方" : "黑方"}${NAMES[piece.side][piece.type]}，${piece.x + 1}列${piece.y + 1}行`);
     button.addEventListener("click", event => {
@@ -169,13 +190,13 @@ async function handleServer(message) {
   if (message.type === "queue.joined") $("#matchDetail").textContent = `当前排队位置：${message.position}`;
   if (message.type === "match.found") { applyOnlineState(message); onlineStatus = "countdown"; $("#matchTitle").textContent = "匹配成功"; $("#matchDetail").textContent = `你执${playerSide === RED ? "朱砂" : "玄青"}，棋局即将开始`; audio.play("start"); }
   if (message.type === "room.started") { applyOnlineState(message); onlineStatus = "playing"; locked = turn !== playerSide; matchmaking.hidden = true; modeSelect.hidden = true; gameOver.hidden = true; statusText.textContent = turn === playerSide ? "轮到你落子" : "等待对手落子"; render(); }
-  if (message.type === "move.accepted") { const moving = pieces.find(p => p.id === message.move?.pieceId); if (moving && message.capturedPiece) playBattle(moving, message.capturedPiece); else audio.play("move"); applyOnlineState(message); onlineStatus = "playing"; locked = turn !== playerSide; statusText.textContent = message.check ? "将军！" : (turn === playerSide ? "轮到你落子" : "等待对手落子"); render(); }
+  if (message.type === "move.accepted") { const moving = pieces.find(p => p.id === message.move?.pieceId); moveAnimation = moving && message.capturedPiece ? playBattle(moving, message.capturedPiece) : Promise.resolve(audio.play("move")); applyOnlineState(message); onlineStatus = "playing"; locked = turn !== playerSide; statusText.textContent = message.check ? "将军！" : (turn === playerSide ? "轮到你落子" : "等待对手落子"); render(); }
   if (message.type === "clock") { clocks = message.clocks; render(); }
   if (message.type === "room.state") { applyOnlineState(message); matchmaking.hidden = message.status === "playing"; modeSelect.hidden = message.status === "playing"; onlineStatus = message.status; locked = turn !== playerSide || message.status !== "playing"; render(); }
   if (message.type === "move.rejected") { locked = turn !== playerSide || onlineStatus !== "playing"; toast(message.message); render(); }
   if (message.type === "opponent.disconnected") { statusText.textContent = "对手断线，保留席位 60 秒"; toast("对手正在重连"); }
   if (message.type === "opponent.reconnected") { statusText.textContent = turn === playerSide ? "轮到你落子" : "等待对手落子"; toast("对手已重连"); }
-  if (message.type === "room.finished") { applyOnlineState(message); onlineStatus = "finished"; endGame(message.winner, message.reason); }
+  if (message.type === "room.finished") { applyOnlineState(message); onlineStatus = "finished"; await moveAnimation; await endGame(message.winner, message.reason); }
   if (message.type === "rematch.waiting") toast(message.accepted?.length === 1 ? "等待对手同意再战" : "双方已同意");
 }
 function applyOnlineState(message) {
