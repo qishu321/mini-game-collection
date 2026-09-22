@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#191713" />
+  <meta name="description" content="三国·山河志：36城、10势力的长期回合制网页SLG。" />
+  <title>三国·山河志｜游艺小馆</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="back" href="../../" aria-label="返回游艺小馆">‹ <span>游艺小馆</span></a>
+    <div class="era"><b id="eraText">兴平元年 · 三月</b><small id="turnText">第 1 月</small></div>
+    <div class="resources" aria-label="势力资源">
+      <span><i>钱</i><b id="moneyText">0</b><small id="moneyFlow">月入 0</small></span>
+      <span><i>粮</i><b id="foodText">0</b><small id="foodFlow">月余 0</small></span>
+      <span><i>兵</i><b id="troopText">0</b><small id="cityText">0 城</small></span>
+      <span><i>望</i><b id="prestigeText">0</b><small>天下人心</small></span>
+    </div>
+    <button class="icon-button" id="soundButton" title="音效" aria-label="开关音效">♪</button>
+    <button class="icon-button speed-button" id="speedButton" title="推进速度" aria-label="切换推进速度">×1</button>
+    <button class="icon-button" id="saveButton" title="保存战役" aria-label="保存战役">存</button>
+  </header>
+
+  <main class="campaign-shell">
+    <aside class="realm-panel" id="realmPanel"></aside>
+
+    <section class="map-stage" aria-label="天下形势图">
+      <div class="map-heading"><span>天下形势</span><strong id="modeHint">选择城池查看军政</strong></div>
+      <div class="map-wrap" id="mapWrap">
+        <svg class="terrain" viewBox="0 0 100 105" role="img" aria-label="三国战略地图">
+          <defs>
+            <filter id="soft"><feGaussianBlur stdDeviation="1.4" /></filter>
+            <pattern id="paper" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6L6 0M-2 2L2-2M4 8L8 4" stroke="#775c3920" stroke-width=".15"/></pattern>
+          </defs>
+          <path class="land" d="M4 11 Q16 3 31 8 T56 6 T86 10 L96 20 91 34 98 46 91 57 95 70 87 85 72 91 61 103 44 98 31 101 18 91 9 82 11 66 3 52 9 39 2 27Z" />
+          <path class="mountains" d="M9 23l5-8 4 9 5-11 5 12m2 16 5-9 4 8 7-13 5 13m-39 31 6-11 5 9 7-14 6 14m7 18 5-10 5 8 5-12 6 14" />
+          <path class="river" d="M25 5Q34 22 51 24T79 35Q69 45 67 61T88 82" />
+          <path class="river thin" d="M16 49Q32 54 45 67T72 76" />
+          <rect width="100" height="105" fill="url(#paper)" />
+          <g id="borderLayer"></g><g id="routeLayer"></g><g id="armyLayer"></g><g id="cityLayer"></g>
+        </svg>
+        <div class="legend" id="legend"></div>
+        <div class="map-toast" id="mapToast" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <aside class="detail-panel" id="detailPanel"></aside>
+  </main>
+
+  <section class="dispatch" id="dispatchPanel">
+    <button class="dispatch-close" id="dispatchClose" aria-label="关闭军报">×</button>
+    <small>军情与事件</small><div id="dispatchList"></div>
+  </section>
+
+  <nav class="command-dock" aria-label="战略命令">
+    <div class="action-points"><span>本月政令</span><b id="actionText">● ● ● ●</b></div>
+    <button data-mode="domestic" class="active"><i>城</i><span>内政</span><small>发展郡县</small></button>
+    <button data-mode="appoint"><i>印</i><span>任命</span><small>太守委任</small></button>
+    <button data-mode="military"><i>戈</i><span>军事</span><small>军团行军</small></button>
+    <button data-mode="diplomacy"><i>盟</i><span>外交</span><small>纵横捭阖</small></button>
+    <button data-mode="policy"><i>策</i><span>国策</span><small>势力总览</small></button>
+    <button class="reports-button" id="reportsButton"><i>报</i><span>军报</span><small id="reportCount">1 封新报</small></button>
+    <button class="end-turn" id="endTurnButton"><i>››</i><span>结束本月</span><small>诸侯同时行动</small></button>
+  </nav>
+
+  <div class="modal-backdrop" id="startModal">
+    <section class="start-card" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+      <div class="start-copy"><small>长期战役 · v0.8 完整战役</small><h1 id="startTitle">三国<span>·</span>山河志</h1><p>经营国家、研发科技、谋定外交，以军团征战三十六城。AI 会长期规划、集中兵力并救援盟友。</p><div class="campaign-facts"><b>36<small>城池</small></b><b>10<small>势力</small></b><b>60<small>武将</small></b><b>3<small>历史剧本</small></b></div><label class="scenario-choice">选择剧本<select id="scenarioSelect"><option>群雄割据</option><option>官渡风云</option><option>赤壁鏖兵</option></select><small id="scenarioDescription">十路诸侯并立，适合完整体验经营、外交与统一。</small></label></div>
+      <div class="faction-choice"><div class="choice-head"><span>选择起兵势力</span><button id="continueButton" hidden>继续存档 1</button></div><div id="factionGrid"></div></div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="confirmModal"><section class="confirm-card" role="dialog" aria-modal="true"><small id="confirmEyebrow">军令</small><h2 id="confirmTitle"></h2><div id="confirmBody"></div><div class="modal-actions"><button id="cancelConfirm">取消</button><button class="primary" id="acceptConfirm">确认</button></div></section></div>
+  <div class="battle-flash" id="battleFlash" aria-hidden="true"><div><small>BREAK THE FORMATION</small><strong id="battleResult">破阵</strong><p id="battleSummary"></p></div></div>
+  <div class="sr-only" id="liveRegion" aria-live="polite"></div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
