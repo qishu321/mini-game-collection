@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#163c43" /><meta name="description" content="叠数坊 2048：滑动数字牌，炼成 2048。" />
+    <title>叠数坊 · 2048</title><link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="kiln-glow" aria-hidden="true"></div>
+    <main>
+      <header>
+        <a class="brand" href="../../"><i>叠</i><span><b>叠数坊</b><small>NUMBER ALCHEMY</small></span></a>
+        <nav><button id="soundBtn" aria-label="切换音效">♪</button><button id="undoBtn">撤销</button><button id="newBtn">新局</button><a href="../../">游戏大厅</a></nav>
+      </header>
+      <section class="layout">
+        <div class="intro">
+          <span class="eyebrow">数字炼成术 · 其二〇四八</span>
+          <h1>相同的数，<br /><em>合而为一。</em></h1>
+          <p>用方向键或滑动推动所有数字牌。相同数字相遇便会合并，试着炼成那枚传说中的「2048」。</p>
+          <div class="scores"><div><small>当前得分</small><strong id="score">0</strong><b id="scoreGain"></b></div><div><small>最高纪录</small><strong id="best">0</strong></div></div>
+          <div class="legend"><span><kbd>← ↑ ↓ →</kbd> 推动数字</span><span><kbd>U</kbd> 撤销一步</span></div>
+        </div>
+        <div class="forge">
+          <div class="forge-top"><span id="status">炉火已燃，可以开始</span><b id="maxLabel">最高 2</b></div>
+          <div id="board" class="board" role="grid" aria-label="2048 四乘四棋盘" tabindex="0"><div id="cells" class="cells"></div><div id="tiles" class="tiles"></div></div>
+          <p>每次有效移动后，会有一枚新的数字牌入炉。</p>
+        </div>
+      </section>
+    </main>
+    <section id="result" class="result" hidden aria-live="assertive"><div><small id="resultKicker">ALCHEMY COMPLETE</small><i id="resultTile">2048</i><h2 id="resultTitle">炼成了 2048</h2><p id="resultText">炉火未熄，你还可以继续创造更大的数字。</p><span><button id="continueBtn">继续挑战</button><button id="restartBtn">重新炼制</button></span></div></section>
+    <div id="toast" class="toast" role="status"></div>
+    <script type="module" src="./game.js"></script>
+  </body>
+</html>

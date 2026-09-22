@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#102f29" /><meta name="description" content="青竹游：Q版国风贪吃蛇。" />
+    <title>青竹游 · 贪吃蛇</title><link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="mist" aria-hidden="true"></div>
+    <main>
+      <header><a class="brand" href="../../"><i>蛇</i><span><b>青竹游</b><small>BAMBOO SNAKE</small></span></a><div class="state"><span id="stateDot"></span><b id="status">选择游玩速度</b></div><nav><button id="soundBtn" aria-label="切换音效">♪</button><button id="pauseBtn">暂停</button><button id="newBtn">重开</button><a href="../../">游戏大厅</a></nav></header>
+      <section class="layout">
+        <aside class="score-panel"><span class="vertical-title">竹间寻桃</span><div><small>本局得分</small><strong id="score">0</strong></div><div><small>最高纪录</small><strong id="best">0</strong></div><p>每吃五颗桃子，<br>小青都会跑得更快。</p></aside>
+        <div class="garden"><div class="canvas-frame"><canvas id="game" width="720" height="540" aria-label="贪吃蛇游戏区域"></canvas><div id="countdown" class="countdown" hidden>3</div></div><div class="garden-meta"><span id="levelLabel">清风 · 轻松</span><b id="lengthLabel">身长 4 节</b><span>方向键 / WASD / 滑动</span></div></div>
+        <aside class="guide"><span class="snake-charm"><i></i><i></i></span><h2>小青</h2><p>一条贪吃桃子的竹叶青。别撞上围墙，也别咬到自己的尾巴。</p><div class="dpad" aria-label="触屏方向控制"><button data-dir="up">↑</button><button data-dir="left">←</button><button data-dir="down">↓</button><button data-dir="right">→</button></div></aside>
+      </section>
+    </main>
+    <section id="modeSelect" class="overlay"><div class="mode-card"><span>CHOOSE THE WIND</span><h1>竹林有风，<br><em>小青出游。</em></h1><p>选择风速。第一次按下方向键，或轻扫竹园时开始。</p><div><button data-speed="relaxed"><b>清风</b><small>慢速 · 适合熟悉操作</small></button><button data-speed="normal"><b>疾风</b><small>标准 · 节奏逐渐加快</small></button><button data-speed="storm"><b>惊风</b><small>高速 · 从第一颗桃子开始紧张</small></button></div><a href="../../">← 返回游戏大厅</a></div><div class="bamboo-art" aria-hidden="true"><i></i><i></i><i></i><span>游</span></div></section>
+    <section id="gameOver" class="overlay game-over" hidden aria-live="assertive"><div><span>本局收获</span><strong id="finalScore">0</strong><h2>小青撞晕了</h2><p id="finalDetail">吃到 0 颗桃子，身长 4 节。</p><button id="againBtn">再游一次</button><button id="speedBtn">更换风速</button></div></section>
+    <div id="toast" class="toast" role="status"></div><script type="module" src="./game.js"></script>
+  </body>
+</html>
