@@ -13,9 +13,14 @@
 
 噩梦 AI 在 Web Worker 中运行，使用紧凑 90 格棋盘、增量 Zobrist 哈希、跨回合置换表、PVS、Alpha-Beta、静态延伸、空着裁剪、后期着法缩减、杀手着法和历史启发。无需模型文件或 AI 接口。
 
+### 星盘：五子棋
+
+- 标准 15×15 星盘与自由五子棋规则
+- 简单、噩梦两档浏览器 AI，计算过程运行在 Web Worker
+- 本地双人、悔棋、键盘落子、胜利连线与 Q 版合成音效
+
 ## 计划加入
 
-- 五子棋
 - 2048
 - 贪吃蛇
 
@@ -26,12 +31,8 @@ dist/
 ├─ index.html                # 游戏集合首页
 ├─ collection.css
 └─ games/
-   └─ xiangqi/              # 中国象棋
-      ├─ index.html
-      ├─ game.js
-      ├─ ai-worker.js
-      ├─ shared-rules.js
-      └─ assets/
+   ├─ xiangqi/              # 中国象棋
+   └─ gomoku/               # 五子棋
 server.mjs                  # 静态服务与联网匹配服务器
 tests/                      # 棋规和 AI 测试
 ```

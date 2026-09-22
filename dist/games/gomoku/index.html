@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#151719" />
+    <meta name="description" content="星盘五子棋：双档 AI 与本地双人对弈。" />
+    <title>星盘 · 五子棋</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <main class="game-shell">
+      <header class="topbar">
+        <a class="brand" href="../../"><span class="seal">五</span><span><b>星盘</b><small>GOMOKU</small></span></a>
+        <div class="turn-display"><i id="turnStone" class="mini-stone black"></i><span id="statusText">请选择对弈方式</span></div>
+        <nav><button id="soundBtn" type="button" aria-label="切换音效">♪</button><button id="undoBtn" type="button">悔棋</button><button id="restartBtn" type="button">重开</button><a href="../../">游戏大厅</a></nav>
+      </header>
+
+      <section class="arena">
+        <aside class="player player--white">
+          <span class="player-mark">白</span><div><small id="whiteRole">后手</small><strong id="whiteName">云子</strong><p>静候破绽，一线封喉</p></div>
+          <i id="whitePulse" class="player-stone white"></i>
+        </aside>
+
+        <div class="board-column">
+          <div class="board-frame">
+            <div id="board" class="board" role="grid" aria-label="十五路五子棋棋盘" tabindex="0">
+              <i class="star s1"></i><i class="star s2"></i><i class="star s3"></i><i class="star s4"></i><i class="star s5"></i>
+              <svg id="winLine" class="win-line" viewBox="0 0 100 100" aria-hidden="true"><line></line></svg>
+              <div id="stones" class="stones"></div>
+              <div id="cursor" class="cursor" hidden></div>
+            </div>
+            <span class="board-corner top-left">天元</span><span class="board-corner bottom-right">连珠</span>
+          </div>
+          <div class="board-meta"><span id="modeLabel">自由规则 · 黑先</span><b id="moveCount">第 0 手</b><span>五子相连即胜</span></div>
+        </div>
+
+        <aside class="player player--black active">
+          <span class="player-mark">黑</span><div><small id="blackRole">先手</small><strong id="blackName">墨团</strong><p>落子如墨，步步成阵</p></div>
+          <i id="blackPulse" class="player-stone black"></i>
+        </aside>
+      </section>
+    </main>
+
+    <section id="modeSelect" class="overlay mode-overlay" aria-labelledby="modeTitle">
+      <div class="mode-panel">
+        <span class="mode-kicker">FIVE IN A ROW</span>
+        <h1 id="modeTitle">落一子，<em>连成一线。</em></h1>
+        <p>十五路星盘，自由规则。黑子先行，横、竖或斜线连成五子即可获胜。</p>
+        <div class="mode-grid">
+          <button type="button" data-mode="ai" data-level="easy"><i>弈</i><span><b>人机 · 轻松</b><small>适合初次入局</small></span></button>
+          <button type="button" data-mode="ai" data-level="nightmare"><i>魇</i><span><b>人机 · 噩梦</b><small>会主动造势与封堵</small></span></button>
+          <button type="button" data-mode="local"><i>双</i><span><b>本地双人</b><small>同一设备轮流落子</small></span></button>
+        </div>
+        <a href="../../">← 返回游戏大厅</a>
+      </div>
+      <div class="mode-art" aria-hidden="true"><div class="moon"></div><i class="hero-stone black">黑</i><i class="hero-stone white">白</i><span>星<br>盘</span></div>
+    </section>
+
+    <section id="result" class="overlay result-overlay" hidden aria-live="assertive">
+      <div class="result-card"><small>FIVE IN A ROW</small><span id="resultSeal" class="result-seal">胜</span><h2 id="resultTitle">黑子获胜</h2><p id="resultDetail">五子连珠，落子成章</p><div><button id="againBtn" type="button">再来一局</button><button id="menuBtn" type="button">更换模式</button></div></div>
+    </section>
+    <div id="toast" class="toast" role="status"></div>
+    <script type="module" src="./game.js"></script>
+  </body>
+</html>
