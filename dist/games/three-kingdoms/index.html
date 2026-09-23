@@ -7,6 +7,7 @@
   <meta name="description" content="三国·山河志：36城、10势力的长期回合制网页SLG。" />
   <title>三国·山河志｜游艺小馆</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./map-v2.css" />
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -25,29 +26,40 @@
   </header>
 
   <main class="campaign-shell">
-    <aside class="realm-panel" id="realmPanel"></aside>
-
     <section class="map-stage" aria-label="天下形势图">
-      <div class="map-heading"><span>天下形势</span><strong id="modeHint">选择城池查看军政</strong></div>
+      <div class="map-heading"><div class="map-heading-title"><small>SHAN HE ZHI · 战略地图</small><span>天下形势</span></div><strong id="modeHint">选择城池查看军政</strong></div>
+      <div class="map-tools" aria-label="地图操作">
+        <button id="toggleRealm" aria-label="展开或收起势力概况" title="势力概况">势</button>
+        <button id="zoomIn" aria-label="放大地图" title="放大地图">＋</button>
+        <button id="zoomOut" aria-label="缩小地图" title="缩小地图">－</button>
+        <button id="fitMap" aria-label="查看全图" title="查看全图">全</button>
+        <button id="focusCity" aria-label="定位所选城池" title="定位所选城池">位</button>
+      </div>
       <div class="map-wrap" id="mapWrap">
-        <svg class="terrain" viewBox="0 0 100 105" role="img" aria-label="三国战略地图">
+        <svg class="terrain" id="strategyMap" viewBox="0 0 136 82" role="img" aria-label="可缩放和拖拽的三国战略地图">
           <defs>
-            <filter id="soft"><feGaussianBlur stdDeviation="1.4" /></filter>
-            <pattern id="paper" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6L6 0M-2 2L2-2M4 8L8 4" stroke="#775c3920" stroke-width=".15"/></pattern>
+            <linearGradient id="mapPaper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e9d4a5"/><stop offset=".55" stop-color="#d8bc83"/><stop offset="1" stop-color="#b79a68"/></linearGradient>
+            <linearGradient id="mapWater" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#617a76"/><stop offset="1" stop-color="#304f53"/></linearGradient>
+            <pattern id="mapGrain" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 7L7 0M-2 2L2-2M5 9L9 5" stroke="#583f2b" stroke-opacity=".08" stroke-width=".16"/></pattern>
+            <clipPath id="landClip"><path id="landClipPath" d="M4 11 Q16 3 31 8 T56 6 T86 10 L96 20 91 34 98 46 91 57 95 70 87 85 72 91 61 103 44 98 31 101 18 91 9 82 11 66 3 52 9 39 2 27Z" transform="translate(-5 5) scale(1.35 .69)"/></clipPath>
+            <filter id="terrainShadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="1.4" stdDeviation="1.4" flood-color="#13272a" flood-opacity=".43"/></filter>
           </defs>
-          <path class="land" d="M4 11 Q16 3 31 8 T56 6 T86 10 L96 20 91 34 98 46 91 57 95 70 87 85 72 91 61 103 44 98 31 101 18 91 9 82 11 66 3 52 9 39 2 27Z" />
-          <path class="mountains" d="M9 23l5-8 4 9 5-11 5 12m2 16 5-9 4 8 7-13 5 13m-39 31 6-11 5 9 7-14 6 14m7 18 5-10 5 8 5-12 6 14" />
-          <path class="river" d="M25 5Q34 22 51 24T79 35Q69 45 67 61T88 82" />
-          <path class="river thin" d="M16 49Q32 54 45 67T72 76" />
-          <rect width="100" height="105" fill="url(#paper)" />
-          <g id="borderLayer"></g><g id="routeLayer"></g><g id="armyLayer"></g><g id="cityLayer"></g>
+          <rect x="-80" y="-80" width="300" height="240" fill="url(#mapWater)"/>
+          <path class="land" d="M4 11 Q16 3 31 8 T56 6 T86 10 L96 20 91 34 98 46 91 57 95 70 87 85 72 91 61 103 44 98 31 101 18 91 9 82 11 66 3 52 9 39 2 27Z" transform="translate(-5 5) scale(1.35 .69)" />
+          <g clip-path="url(#landClip)"><g id="borderLayer"></g><rect x="-10" y="0" width="150" height="85" fill="url(#mapGrain)" pointer-events="none"/></g>
+          <g id="terrainLayer" clip-path="url(#landClip)"></g>
+          <g id="routeLayer"></g><g id="armyLayer"></g><g id="cityLayer"></g>
+          <g class="map-frame-label"><text x="3" y="7">西　北</text><text x="118" y="75">东　南</text></g>
         </svg>
+        <div class="map-scale" id="mapScale">滚轮缩放 · 拖动地图 · 点击城池</div>
         <div class="legend" id="legend"></div>
+        <div class="map-tooltip" id="mapTooltip" role="status"></div>
         <div class="map-toast" id="mapToast" aria-live="polite"></div>
       </div>
     </section>
-
+    <aside class="realm-panel" id="realmPanel"></aside>
     <aside class="detail-panel" id="detailPanel"></aside>
+    <button class="detail-close" id="detailClose" aria-label="关闭城池详情">×</button>
   </main>
 
   <section class="dispatch" id="dispatchPanel">

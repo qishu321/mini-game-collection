@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#4d8f91">
+  <meta name="description" content="苔光邮局：在一座温柔小岛上送信、采集并修复失落设施的网页探索游戏。"><title>苔光邮局｜游艺小馆</title><link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="game" id="game" tabindex="0" aria-label="苔光邮局探索地图">
+    <div class="world" id="world">
+      <img class="island" src="./assets/mosslight-island.png" alt="苔光小岛：邮局、温室、池塘与栈桥">
+      <div class="light-shift" id="lightShift"></div><canvas id="routeCanvas"></canvas>
+      <div class="weather" id="weather" aria-hidden="true"></div>
+      <button class="hotspot" data-place="post" style="--x:31%;--y:40%"><i>✉</i><span>苔光邮局</span></button>
+      <button class="hotspot" data-place="garden" style="--x:31%;--y:59%"><i>❀</i><span>暖风菜圃</span></button>
+      <button class="hotspot" data-place="oak" style="--x:49%;--y:25%"><i>♣</i><span>年轮树</span></button>
+      <button class="hotspot" data-place="observatory" style="--x:70%;--y:30%"><i>✦</i><span>星露温室</span></button>
+      <button class="hotspot" data-place="pond" style="--x:70%;--y:57%"><i>◌</i><span>睡莲池</span></button>
+      <button class="hotspot" data-place="dock" style="--x:49%;--y:78%"><i>⌁</i><span>潮汐栈桥</span></button>
+      <div class="npc mimo" style="--x:36%;--y:46%"><i></i><b>米莫</b></div><div class="npc luca" style="--x:64%;--y:36%"><i></i><b>露卡</b></div>
+      <div class="player" id="player"><i class="shadow"></i><div class="body"><u></u><b></b><em></em></div><span id="interactPrompt">E</span></div>
+    </div>
+
+    <header class="hud-top">
+      <a class="island-mark" href="../../" aria-label="返回游艺小馆"><i>苔</i><span><small>FIELD NOTES · 001</small><b>苔光邮局</b></span></a>
+      <div class="day-card"><span id="weatherLabel">晴</span><b id="timeLabel">08:00</b><small id="dayLabel">第 1 天</small></div>
+      <button class="round-btn" id="soundButton" aria-label="开关声音">♪</button><button class="round-btn" id="helpButton" aria-label="查看帮助">?</button>
+    </header>
+
+    <aside class="journal">
+      <small>今日邮路</small><h1 id="questTitle">第一封信</h1><p id="questText">去苔光邮局找米莫报到</p>
+      <div class="quest-progress"><i id="questProgress"></i></div><button id="focusQuest">循着信光</button>
+    </aside>
+
+    <aside class="inventory" aria-label="背包">
+      <button data-item="letters"><i>✉</i><b id="letterCount">0</b><span>来信</span></button><button data-item="dew"><i>◌</i><b id="dewCount">0</b><span>星露</span></button><button data-item="wood"><i>⌁</i><b id="woodCount">0</b><span>木枝</span></button><button data-item="herb"><i>❀</i><b id="herbCount">0</b><span>香草</span></button>
+    </aside>
+
+    <div class="energy"><span>心情</span><i><b id="energyBar"></b></i><em id="energyText">100</em></div>
+    <button class="sleep" id="restButton"><i>☾</i><span>回邮局休息</span></button>
+    <div class="controls"><span>WASD / 方向键移动</span><span>E / 空格互动</span><span>点击地点自动前往</span></div>
+
+    <div class="mobile-pad" aria-label="移动控制"><button data-dir="up">▲</button><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div><button class="mobile-action" id="mobileAction">互动</button>
+
+    <section class="dialogue hidden" id="dialogue" role="dialog" aria-modal="true">
+      <div class="dialogue-scene"><div class="portrait" id="portrait"><i></i></div><div class="dialogue-copy"><small id="speaker">岛屿手记</small><h2 id="dialogueTitle"></h2><p id="dialogueBody"></p><button id="dialogueNext">继续 <span>E</span></button></div></div>
+    </section>
+
+    <section class="intro" id="intro"><div class="intro-card"><small>一封寄给慢生活的信</small><h1>苔光<br><span>邮局</span></h1><p>穿过树影，把散落在岛上的故事重新送达。</p><button id="startButton">登上小岛</button><div class="save-note" id="saveNote">进度会自动保存在此浏览器</div></div></section>
+    <div class="toast" id="toast" aria-live="polite"></div>
+  </main>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
